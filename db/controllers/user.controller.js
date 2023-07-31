@@ -9,8 +9,7 @@ class UserController {
 
     constructor() {
         this.db = connect();
-        // For Development
-        // this.db.sequelize.sync({ force: true });
+        this.db.sequelize.sync({ force: true });// For Development
     }
 
     /**
@@ -23,8 +22,7 @@ class UserController {
                 headers: { "Authorization": `Bearer ${req.body.token}` }
             })
 
-            const firstName = response.data.given_name;
-            const lastName = response.data.family_name;
+            const name = response.data.name;
             const email = response.data.email;
             const profilePicture = response.data.picture;
 
@@ -37,7 +35,7 @@ class UserController {
 
                 return ({ token: token })
             }
-            const newUser = await this.db.user.create({ firstName, lastName, email, profilePicture })
+            const newUser = await this.db.user.create({ name, email, profilePicture })
 
             const token = jwt.sign({
                 id: newUser.dataValues.id
@@ -63,7 +61,7 @@ class UserController {
      */
     async updateProfile(req){
         try {
-            await this.db.user.update({profilePicture:req.body.image},{where:{id:req.user.id}})
+            await this.db.user.update({name:req.body.name,profilePicture:req.body.image},{where:{id:req.user.id}})
             return ({ success: "Update Profile: Operation Complete" })
       
         } catch (err) {

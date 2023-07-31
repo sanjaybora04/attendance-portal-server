@@ -9,13 +9,9 @@ module.exports = (sequelize, DataTypes, Model) => {
       autoIncrement: true,
       primaryKey: true
     },
-    firstName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    lastName: {
-      type: DataTypes.STRING
-      // allowNull defaults to true
     },
     email: {
       type: DataTypes.STRING,
