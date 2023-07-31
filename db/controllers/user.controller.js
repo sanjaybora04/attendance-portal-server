@@ -1,6 +1,5 @@
 const axios = require('axios')
 const jwt = require('jsonwebtoken')
-const keys = require("../../config/keys")
 const { connect } = require('../db');
 
 
@@ -34,7 +33,7 @@ class UserController {
             if (existingUser) {
                 const token = jwt.sign({
                     id: existingUser.dataValues.id
-                }, keys.jwt.secret, { expiresIn: "24d" })
+                }, process.env.JWT_SECRET, { expiresIn: "24d" })
 
                 return ({ token: token })
             }
@@ -42,7 +41,7 @@ class UserController {
 
             const token = jwt.sign({
                 id: newUser.dataValues.id
-            }, keys.jwt.secret, { expiresIn: "24d" })
+            }, process.env.JWT_SECRET, { expiresIn: "24d" })
 
             return ({ token })
 

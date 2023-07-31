@@ -1,4 +1,3 @@
-const keys = require("../../config/keys")
 const { connect } = require('../db');
 
 
