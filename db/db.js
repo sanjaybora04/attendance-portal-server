@@ -9,23 +9,23 @@ const connect = () => {
     const database = 'attendance_portal';
     const dialect = 'postgres';
 
-    const sequelize = new Sequelize(database, userName, password, {
-        host: hostName,
-        dialect: dialect,
-        operatorsAliases: false,
-        pool: {
-            max: 10,
-            min: 0,
-            acquire: 20000,
-            idle: 5000
-        }
-    });
+    // const sequelize = new Sequelize(database, userName, password, {
+    //     host: hostName,
+    //     dialect: dialect,
+    //     operatorsAliases: false,
+    //     pool: {
+    //         max: 10,
+    //         min: 0,
+    //         acquire: 20000,
+    //         idle: 5000
+    //     }
+    // });
 
     // console.log('process.env.PG_CONNECTION_STR ', process.env.PG_CONNECTION_STR)
 
-    // const sequelize = new Sequelize(process.env.PG_CONNECTION_STR, {
-    //     dialectModule: pg
-    // });
+    const sequelize = new Sequelize(process.env.PG_CONNECTION_STR, {
+        dialectModule: pg
+    });
 
     const db = {};
     db.Sequelize = Sequelize;
