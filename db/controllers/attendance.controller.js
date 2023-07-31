@@ -8,7 +8,7 @@ class AttendanceController {
 
     constructor() {
         this.db = connect();
-        // this.db.sequelize.sync({ force: true }); // For Development
+        this.db.sequelize.sync({ force: true }); // For Development
     }
 
     /**

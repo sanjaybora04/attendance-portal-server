@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { Sequelize, Model, DataTypes } = require("sequelize");
 const pg = require('pg');
 
@@ -21,7 +22,7 @@ const connect = () => {
     //     }
     // });
 
-    // console.log('process.env.PG_CONNECTION_STR ', process.env.PG_CONNECTION_STR)
+    console.log('process.env.PG_CONNECTION_STR ', process.env.PG_CONNECTION_STR)
 
     const sequelize = new Sequelize(process.env.PG_CONNECTION_STR, {
         dialectModule: pg
