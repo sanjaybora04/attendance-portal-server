@@ -2,6 +2,10 @@ const router = require("express").Router();
 const User = require('../db/controllers/user.controller')
 const authCheck = require('../middleware/auth-check')
 
+router.get('/', async (req, res) => {
+  res.send('hello')
+})
+
 router.post('/signin', async (req, res) => {
   const response = await User.signin(req)
   res.json(response)
