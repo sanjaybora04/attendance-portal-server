@@ -10,6 +10,7 @@ router.post('/getClasses', authCheck, async (req, res) => {
     for (const _class of classes) {
         _class.attendance = (await Attendance.getAttendance(req.user.id,_class.id,req.user.id)).attendance
     }
+    console.log(classes)
     res.json(classes)
 })
 

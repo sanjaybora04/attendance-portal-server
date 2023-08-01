@@ -16,7 +16,13 @@ class ClassController {
      */
     async getClasses(userId) {
         const user = await this.db.user.findByPk(userId)
-        return await user.getClasses({raw:true})
+        return await user.getClasses({raw:true, include:[
+            {
+                model:this.db.user,
+                as:'Teacher',
+                attributes:["name"]
+            }
+        ]})
     }
 
     /**
