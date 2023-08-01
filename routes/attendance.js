@@ -14,5 +14,10 @@ router.post('/getAttendance', authCheck, async (req,res) => {
     res.json(response)
 })
 
+router.post('/getReport', authCheck, async(req,res)=>{
+    const response = await Attendance.getReport(req.user.id,req.body.class_id)
+    res.json(response)
+})
+
 
 module.exports = router;
