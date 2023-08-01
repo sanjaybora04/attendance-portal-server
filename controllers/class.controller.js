@@ -72,15 +72,15 @@ class ClassController {
 
 
     /**
-     * Get Student List
+     * Get Class Data
      */
-    async getStudents(userId,classId){
+    async getClass(userId,classId){
         try{
             const user = await this.db.user.findByPk(userId)
             const _class = await this.db.class.findByPk(classId)
             if(user.hasMyClass(_class)|| user.hasClass(_class)){    // check if user owns the class or is in class
                 const students = await _class.getStudents()
-                return ({students})
+                return ({students,name:_class.name})
             }
             else{
                 return({error:"Get students: Access denied!!"})

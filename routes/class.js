@@ -34,9 +34,9 @@ router.post('/deleteClass', authCheck, async (req, res) => {
 })
 
 
-// Get students
-router.post('/getStudents',authCheck, async(req,res)=>{
-    const response = await Class.getStudents(req.user.id,req.body.class_id)
+// Get Class Data
+router.post('/getClass',authCheck, async(req,res)=>{
+    const response = await Class.getClass(req.user.id,req.body.class_id)
     res.json(response)
 })
 
