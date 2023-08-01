@@ -1,4 +1,4 @@
-const { connect } = require('../db');
+const { connect } = require('../db/db');
 
 
 class ClassController {
@@ -16,7 +16,7 @@ class ClassController {
      */
     async getClasses(userId) {
         const user = await this.db.user.findByPk(userId)
-        return await user.getClasses()
+        return await user.getClasses({raw:true})
     }
 
     /**

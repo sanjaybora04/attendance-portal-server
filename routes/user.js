@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const User = require('../db/controllers/user.controller')
+const User = require('../controllers/user.controller')
 const authCheck = require('../middleware/auth-check')
 
 router.get('/', async (req, res) => {

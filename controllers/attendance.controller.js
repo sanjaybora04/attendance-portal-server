@@ -1,4 +1,4 @@
-const { connect } = require('../db');
+const { connect } = require('../db/db');
 const fastcsv = require('fast-csv')
 
 

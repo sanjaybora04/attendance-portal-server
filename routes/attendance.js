@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const authCheck = require('../middleware/auth-check')
-const Attendance = require('../db/controllers/attendance.controller')
+const Attendance = require('../controllers/attendance.controller')
 
 
 // returns the list of classes and the list of class _ids with live attendance

@@ -1,6 +1,6 @@
 const axios = require('axios')
 const jwt = require('jsonwebtoken')
-const { connect } = require('../db');
+const { connect } = require('../db/db');
 
 
 class UserController {

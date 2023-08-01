@@ -1,13 +1,16 @@
 const router = require("express").Router();
 const authCheck = require('../middleware/auth-check')
-const User = require('../db/controllers/user.controller')
-const Class = require('../db/controllers/class.controller');
+const Class = require('../controllers/class.controller');
+const Attendance = require('../controllers/attendance.controller')
 
 
 // returns the list of classes and the list of class _ids with live attendance
 router.post('/getClasses', authCheck, async (req, res) => {
-    const response = await Class.getClasses(req.user.id)
-    res.json(response)
+    const classes = await Class.getClasses(req.user.id)
+    for (const _class of classes) {
+        _class.attendance = (await Attendance.getAttendance(req.user.id,_class.id,req.user.id)).attendance
+    }
+    res.json(classes)
 })
 
 // get My Classes

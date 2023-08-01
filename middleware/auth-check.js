@@ -1,4 +1,4 @@
-const User = require('../db/controllers/user.controller')
+const User = require('../controllers/user.controller')
 const jwt = require('jsonwebtoken')
 
 /**
