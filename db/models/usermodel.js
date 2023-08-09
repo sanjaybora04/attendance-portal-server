@@ -20,11 +20,6 @@ module.exports = (sequelize, DataTypes, Model) => {
     profilePicture: {
       type: DataTypes.TEXT
       // allowNull defaults to true
-    },
-    defaultMode:{
-      type: DataTypes.STRING,
-      defaultValue:"student",
-      allowNull:false
     }
   }, {
     // Other model options go here

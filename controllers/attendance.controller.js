@@ -1,5 +1,6 @@
 const { connect } = require('../db/db');
 const fastcsv = require('fast-csv')
+const { Op } = require('sequelize');
 
 
 class AttendanceController {
@@ -14,21 +15,45 @@ class AttendanceController {
     /**
      * Get Enrolled Classes
     */
-    async postAttendance(userId, classId, attendanceList) {
+    async postAttendance(userId, classId, attendanceList, attendanceId) {
         try {
             const user = await this.db.user.findByPk(userId)
             const _class = await this.db.class.findByPk(classId)
 
             if (user.hasMyClass(_class)) {                              // check if user owns the class
-                const attendance = await _class.createAttendance()
-                await attendance.setClass(_class)
-                await attendanceList.map(async (email) => {
-                    const student = await this.db.user.findOne({ where: { email } })
-                    await student.addAttendance(attendance)
-                    await attendance.addStudent(student)
-                })
-
-                return ({ success: "Attendance Marked Successfully" })
+                if(attendanceId==null){                             // if attendanceId is null create new attendance else update the existing attendance
+                    const attendance = await _class.createAttendance()
+                    await attendance.setClass(_class)
+                    await attendanceList.map(async (email) => {
+                        const student = await this.db.user.findOne({ where: { email } })
+                        await student.addAttendance(attendance)
+                        await attendance.addStudent(student)
+                    })
+                    
+                    return ({ success: "Attendance Marked Successfully" })
+                }
+                else{
+                    const attendance = await this.db.attendance.findByPk(attendanceId)
+                    if(_class.hasAttendance(attendance)){                       // check if attendance belongs to class
+                        // Remove old attendances
+                        const old = await attendance.getStudents()
+                        await old.map(async(student)=>{
+                            attendance.removeStudent(student)
+                            student.removeAttendance(attendance)
+                        })
+                        // Add new Attendances
+                        await attendanceList.map(async (email) => {
+                            const student = await this.db.user.findOne({ where: { email } })
+                            await student.addAttendance(attendance)
+                            await attendance.addStudent(student)
+                        })
+                        
+                        return ({ success: "Attendance Updated Successfully" })
+                    }
+                    else{
+                        return({error: "Update Attendance: Access denied"})
+                    }
+                }
             }
             else {
                 return ({ error: "Post Attendance: Access denied!!" })
@@ -134,6 +159,42 @@ class AttendanceController {
         } catch (err) {
             console.log(err)
             return ({ error: "Get Attendance: Internal Server Error" })
+        }
+    }
+
+    /**
+     * Get Attendance data on specific date
+     */
+    async getAttendanceData(userId, classId, date) {
+        try {
+            date = new Date(date)
+
+            const user = await this.db.user.findByPk(userId)
+            const _class = await this.db.class.findByPk(classId)
+
+            if (user.hasMyClass(_class)) {    // check if user owns the class
+                const attendances = await _class.getAttendances({
+                    where: {
+                        createdAt: {
+                            [Op.between]: [date,new Date(date).setDate(date.getDate()+1)]    // get all attendances in that day
+                        }
+                    },
+                    include: [
+                        {
+                            model: this.db.user,
+                            as: "Students",
+                            attributes: ['email']
+                        }
+                    ]
+                })
+                return ({attendances})
+            }
+            else {
+                return ({ error: "Get Attendance Data: Access denied!!" })
+            }
+        } catch (err) {
+            console.log(err)
+            return ({ error: "Get Attendance Data: Internal Server Error" })
         }
     }
 
