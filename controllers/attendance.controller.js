@@ -15,14 +15,15 @@ class AttendanceController {
     /**
      * Get Enrolled Classes
     */
-    async postAttendance(userId, classId, attendanceList, attendanceId) {
+    async postAttendance(userId, classId, attendanceList,date, attendanceId) {
         try {
+            date = new Date(date)
             const user = await this.db.user.findByPk(userId)
             const _class = await this.db.class.findByPk(classId)
 
             if (user.hasMyClass(_class)) {                              // check if user owns the class
                 if(attendanceId==null){                             // if attendanceId is null create new attendance else update the existing attendance
-                    const attendance = await _class.createAttendance()
+                    const attendance = await _class.createAttendance({createdAt:date})
                     await attendance.setClass(_class)
                     await attendanceList.map(async (email) => {
                         const student = await this.db.user.findOne({ where: { email } })
@@ -163,9 +164,9 @@ class AttendanceController {
     }
 
     /**
-     * Get Attendance data on specific date
+     * Get Teacher Attendance data on specific date
      */
-    async getAttendanceData(userId, classId, date) {
+    async getTeacherAttendance(userId, classId, date) {
         try {
             date = new Date(date)
 
@@ -176,7 +177,7 @@ class AttendanceController {
                 const attendances = await _class.getAttendances({
                     where: {
                         createdAt: {
-                            [Op.between]: [date,new Date(date).setDate(date.getDate()+1)]    // get all attendances in that day
+                            [Op.eq]: date    // get all attendances in that day
                         }
                     },
                     include: [
@@ -184,6 +185,44 @@ class AttendanceController {
                             model: this.db.user,
                             as: "Students",
                             attributes: ['email']
+                        }
+                    ]
+                })
+                return ({attendances})
+            }
+            else {
+                return ({ error: "Get Attendance Data: Access denied!!" })
+            }
+        } catch (err) {
+            console.log(err)
+            return ({ error: "Get Attendance Data: Internal Server Error" })
+        }
+    }
+
+    /**
+     * Get Student Attendance data on specific date
+     */
+    async getStudentAttendance(userId, classId, date) {
+        try {
+            date = new Date(date)
+
+            const user = await this.db.user.findByPk(userId)
+            const _class = await this.db.class.findByPk(classId)
+
+            if (user.hasClass(_class)) {    // check if user belongs to class
+                const attendances = await _class.getAttendances({
+                    where: {
+                        createdAt: {
+                            [Op.eq]: date    // get all attendances in that day
+                        }
+                    },
+                    include: [
+                        {
+                            model: this.db.user,
+                            as: "Students",
+                            attributes: ['email'],
+                            where:{id:userId},
+                            required: false
                         }
                     ]
                 })

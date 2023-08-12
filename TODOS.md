@@ -3,3 +3,5 @@
   * getprofile always runs whenever page is loaded or reloaded so user will always be authenticated
 
 * Add 512x512 icon to manifest.json
+
+* round percentage in attendance percentage and add percentage sign

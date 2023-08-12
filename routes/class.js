@@ -4,18 +4,17 @@ const Class = require('../controllers/class.controller');
 const Attendance = require('../controllers/attendance.controller')
 
 
-// returns the list of classes and the list of class _ids with live attendance
-router.post('/getClasses', authCheck, async (req, res) => {
+// get Student Classes
+router.post('/getStudentClasses', authCheck, async (req, res) => {
     const classes = await Class.getClasses(req.user.id)
     for (const _class of classes) {
         _class.attendance = (await Attendance.getAttendance(req.user.id,_class.id,req.user.id)).attendance
     }
-    console.log(classes)
     res.json(classes)
 })
 
-// get My Classes
-router.post('/getMyClasses', authCheck, async (req, res) => {
+// get Teacher Classes
+router.post('/getTeacherClasses', authCheck, async (req, res) => {
     const response = await Class.getMyClasses(req.user.id)
     res.json(response)
 })

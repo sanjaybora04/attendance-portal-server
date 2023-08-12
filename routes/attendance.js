@@ -5,7 +5,7 @@ const Attendance = require('../controllers/attendance.controller')
 
 // add new attendance
 router.post('/postAttendance', authCheck, async (req, res) => {
-    const response = await Attendance.postAttendance(req.user.id,req.body.class_id,req.body.attendanceList,req.body.attendanceId)
+    const response = await Attendance.postAttendance(req.user.id,req.body.class_id,req.body.attendanceList,req.body.date,req.body.attendanceId)
     res.json(response)
 })
 
@@ -21,9 +21,15 @@ router.post('/getReport', authCheck, async(req,res)=>{
     res.json(response)
 })
 
-// get Attendance data on specific date
-router.post('/getAttendanceData',authCheck,async(req,res)=>{
-    const response = await Attendance.getAttendanceData(req.user.id,req.body.class_id,req.body.date)
+// get Teacher Attendance data on specific date
+router.post('/getTeacherAttendance',authCheck,async(req,res)=>{
+    const response = await Attendance.getTeacherAttendance(req.user.id,req.body.class_id,req.body.date)
+    res.json(response)
+})
+
+// get Student Attendance data on specific date
+router.post('/getStudentAttendance',authCheck,async(req,res)=>{
+    const response = await Attendance.getStudentAttendance(req.user.id,req.body.class_id,req.body.date)
     res.json(response)
 })
 

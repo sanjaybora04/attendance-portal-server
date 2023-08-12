@@ -17,7 +17,6 @@ class UserController {
      */
     async signin(req) {
         try {
-
             const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
                 headers: { "Authorization": `Bearer ${req.body.token}` }
             })
