@@ -119,7 +119,7 @@ class AttendanceController {
 
                 let attendance = 100
                 if (total > 0) {
-                    attendance = attended / total * 100
+                    attendance = Math.round(attended / total * 100)
                 }
                 return ({ attendance })
             }
