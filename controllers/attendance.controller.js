@@ -15,30 +15,30 @@ class AttendanceController {
     /**
      * Get Enrolled Classes
     */
-    async postAttendance(userId, classId, attendanceList,date, attendanceId) {
+    async postAttendance(userId, classId, attendanceList, date, attendanceId) {
         try {
             date = new Date(date)
             const user = await this.db.user.findByPk(userId)
             const _class = await this.db.class.findByPk(classId)
 
             if (user.hasMyClass(_class)) {                              // check if user owns the class
-                if(attendanceId==null){                             // if attendanceId is null create new attendance else update the existing attendance
-                    const attendance = await _class.createAttendance({createdAt:date})
+                if (attendanceId == null) {                             // if attendanceId is null create new attendance else update the existing attendance
+                    const attendance = await _class.createAttendance({ createdAt: date })
                     await attendance.setClass(_class)
                     await attendanceList.map(async (email) => {
                         const student = await this.db.user.findOne({ where: { email } })
                         await student.addAttendance(attendance)
                         await attendance.addStudent(student)
                     })
-                    
-                    return ({ success: "Attendance Marked Successfully" })
+
+                    return ({ success: "Attendance Marked" })
                 }
-                else{
+                else {
                     const attendance = await this.db.attendance.findByPk(attendanceId)
-                    if(_class.hasAttendance(attendance)){                       // check if attendance belongs to class
+                    if (_class.hasAttendance(attendance)) {                       // check if attendance belongs to class
                         // Remove old attendances
                         const old = await attendance.getStudents()
-                        await old.map(async(student)=>{
+                        await old.map(async (student) => {
                             attendance.removeStudent(student)
                             student.removeAttendance(attendance)
                         })
@@ -48,11 +48,11 @@ class AttendanceController {
                             await student.addAttendance(attendance)
                             await attendance.addStudent(student)
                         })
-                        
-                        return ({ success: "Attendance Updated Successfully" })
+
+                        return ({ success: "Attendance Updated" })
                     }
-                    else{
-                        return({error: "Update Attendance: Access denied"})
+                    else {
+                        return ({ error: "Update Attendance: Access denied" })
                     }
                 }
             }
@@ -62,6 +62,32 @@ class AttendanceController {
         } catch (err) {
             console.log(err)
             return ({ error: "Post Attendance: Internal Server Error" })
+        }
+    }
+
+    /**
+     * Delete Attendance
+     */
+    async deleteAttendance(userId, classId, attendanceId) {
+        try {
+            const user = await this.db.user.findByPk(userId)
+            const _class = await this.db.class.findByPk(classId)
+
+            if (user.hasMyClass(_class)) {    // check if user owns the class
+                const attendance = await this.db.attendance.findByPk(attendanceId)
+                if (_class.hasAttendance(attendance)){
+                    await attendance.destroy()
+                    return ({success: "Attendance Deleted"})
+                }else{
+                    return ({error: "Delete Attendance: Access denied!!"})
+                }
+            }
+            else {
+                return ({ error: "Delete Attendance: Access denied!!" })
+            }
+        } catch (err) {
+            console.log(err)
+            return ({ error: "Delete Attendance: Internal Server Error" })
         }
     }
 
@@ -188,7 +214,7 @@ class AttendanceController {
                         }
                     ]
                 })
-                return ({attendances})
+                return ({ attendances })
             }
             else {
                 return ({ error: "Get Attendance Data: Access denied!!" })
@@ -221,12 +247,12 @@ class AttendanceController {
                             model: this.db.user,
                             as: "Students",
                             attributes: ['email'],
-                            where:{id:userId},
+                            where: { id: userId },
                             required: false
                         }
                     ]
                 })
-                return ({attendances})
+                return ({ attendances })
             }
             else {
                 return ({ error: "Get Attendance Data: Access denied!!" })

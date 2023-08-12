@@ -41,7 +41,7 @@ class ClassController {
             const user = await this.db.user.findByPk(userId)
             const _class = await user.createMyClass(classData)  // create class set it as user's owned class
             await _class.setTeacher(user)                       // set user as class's owner
-            return ({success:"Create Class: Operation Complete"})
+            return ({success:"Class Created"})
         }catch(err){
             console.log(err)
             return ({error:"Create Class: Internal Server Error"})
@@ -57,7 +57,7 @@ class ClassController {
             const _class = await this.db.class.findByPk(classId)
             if(user.hasMyClass(_class)){                              // check if user owns the class
                 await this.db.class.destroy({where:{id:classId}})   // Delete Class
-                return ({success:"Delete Class: Operation Complete"})
+                return ({success:"Class Deleted"})
             }
             else{
                 return({error:"Delete Class: Access denied!!"})
@@ -119,7 +119,7 @@ class ClassController {
                     response.error = "one email was not found"
                 }
                 else{
-                    response.success = "Add students: Operation Complete"
+                    response.success = "Student Added"
                 }
 
                 return response

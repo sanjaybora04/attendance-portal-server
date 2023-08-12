@@ -9,6 +9,12 @@ router.post('/postAttendance', authCheck, async (req, res) => {
     res.json(response)
 })
 
+// Delete attendance
+router.post('/deleteAttendance',authCheck, async (req,res)=>{
+    const response = await Attendance.deleteAttendance(req.user.id,req.body.class_id,req.body.attendanceId)
+    res.json(response)
+})
+
 // get attendance percentage of a student in a class
 router.post('/getAttendance', authCheck, async (req,res) => {
     const response = await Attendance.getAttendance(req.user.id, req.body.class_id, req.user.id)
