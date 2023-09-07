@@ -14,10 +14,10 @@ const authCheck = async(req,res,next)=>{
             next()
         }
         else{
-            res.json({notloggedin:true})
+            res.json({invalidToken:true})
         }
     }catch(err){
-        res.json({notloggedin:true})
+        res.json({invalidToken:true})
     }
 };
 
