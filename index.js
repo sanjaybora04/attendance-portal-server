@@ -23,6 +23,6 @@ app.use('/',_class)
 app.use('/',attendance)
 
 
-app.listen(5000,()=>{
-    console.log("server started at Port : 5000");
+app.listen(process.env.PORT,()=>{
+    console.log(`server started at Port : ${process.env.PORT}`);
 })
